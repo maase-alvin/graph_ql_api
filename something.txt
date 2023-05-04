@@ -1,0 +1,79 @@
+Question 2
+The task is to implement a service providing a GraphQL API using 
+the Apollo framework for managing the collection of orders.
+
+Requirements
+The task is to deliver an apollo server instance that fulfills 
+the following requirements:
+1. The main query must contain an orders query which 
+returns the collection of all orders (type: Order; 
+see last requirement for data definitions)
+
+2. The orders query must allow orders to be 
+filtered by status (orders(status: Status)), 
+which yields a list of returned orders equal to the given status.
+
+3. The main query must contain an order (id: String) 
+query which returns an Order found by id (see Order data definition).
+
+4. The API must contain a mutation updateStatus (id: ID, status: Status) 
+which updates the status of an order with a given id to the 
+provided status. Status is an enumeration of PENDING, PAID, 
+IN_PROGESS, IN_DELIVERY, DELIVERED. The mutation must 
+return the whole Order object in response.
+
+5. All mutations and queries must operate on a local SQLite database. 
+You can find the implementation of the data access 
+class in the db.js file
+
+6. You can check the database structure in 
+the db.js file (initialize method). AN important 
+thing to note is that the item column stores items
+ as a comma-separated list of items, e.g. "123, 231, 454" , 
+ while in the API this must be returned as JSON array 
+ (see schema definition below)
+
+schema definition 
+Order:
+id: required; type ID
+deliveryAddress: required; type String
+items: required; array of type String (contains array of item IDs)
+total: required; type Float
+discountCode: optional; type String
+comment: optional; type String
+status: required; enumeration of PENDING, PAID, IN_PROGRESS, IN_DELIVERY, DELIVERY (use GraphQL enumeration)
+
+Example of correct queries: 
+{ 
+    query {
+        order (id: 1) {
+                        id
+                        total
+                        discountCode
+                        comment
+                        items
+                        status
+                        deliveryAddress
+                    }
+            }
+}
+
+
+{
+    mutation {
+            updateStatus (id: 1, status: PAID){
+                    }
+            }
+}
+
+
+Hints :
+Use the db object provided in server.js through dataSources feature of Apollo Server
+
+The task uses the following version of dependencies
+apollo-datasource : 0.7.0
+apollo-server: 2.10.0
+sqlite3: 4.1.1
+
+
+
